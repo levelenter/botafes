@@ -16,4 +16,4 @@ COPY . .
 EXPOSE 3004
 
 #CMD [ "npm", "run","prod" ]
-CMD ["sudo", "npm", "run","dev:sv" ]
+CMD [ "npm", "run","dev:sv" ]
