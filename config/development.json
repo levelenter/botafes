@@ -1,0 +1,15 @@
+{
+  "server_port": 3004,
+  "db": {
+    "host": "localhost",
+    "port": 3310,
+    "database": "moc",
+    "user": "levelenter",
+    "password": "levelenter!",
+    "maxcon": 100
+  },
+  "log": {
+    "path": "./log/app.log",
+    "level": "info"
+  }
+}

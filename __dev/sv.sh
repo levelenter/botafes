@@ -1,3 +1,2 @@
-#!/bin/sh
+#!/bin/bash
 ssh levelenter@demo.blockvrock.com
-#levelenter!

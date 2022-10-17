@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    // ソースマップを有効化
+    "sourceMap": true,
+    // TSはECMAScript 5に変換
+    "target": "ESNext",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    // TSのモジュールはES Modulesとして出力
+    // "module": "ESNext",
+    "module": "commonjs",
+    "strict": true,
+    "typeRoots": ["node_modules/@types", "src/@types"]
+  }
+}

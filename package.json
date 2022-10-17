@@ -1,0 +1,44 @@
+{
+  "scripts": {
+    "dev:web": "webpack -w",
+    "dev:sv": "ts-node ./src/server/index.ts",
+    "prod": "run-s prod:web prod:tsc prod:sv",
+    "prod:web": "webpack",
+    "prod:sv": "pm2 start config/pm2.config.json --env production",
+    "prod:tsc": "tsc",
+    "serve": "pm2 start",
+    "seed": "npx prisma db seed",
+    "_seed": "ts-node ./src/data/seed.ts --project tsconfig.seed.json",
+    "studio": "npx prisma studio",
+    "db:migrate": "npx prisma migrate dev --name migrate"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} ./src/data/seed.ts"
+  },
+  "devDependencies": {
+    "@prisma/client": "^4.4.0",
+    "@types/compression": "^1.7.2",
+    "@types/config": "^3.3.0",
+    "@types/express": "^4.17.14",
+    "@types/node": "^18.11.0",
+    "npm-run-all": "^4.1.5",
+    "prisma": "^4.4.0",
+    "ts-loader": "^9.3.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.3",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "private": true,
+  "dependencies": {
+    "@types/aframe": "^1.2.0",
+    "@types/howler": "^2.2.7",
+    "compression": "^1.7.4",
+    "config": "^3.3.8",
+    "express": "^4.18.2",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.3.0",
+    "gsap": "^3.11.1",
+    "howler": "^2.2.3"
+  }
+}
