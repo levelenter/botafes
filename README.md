@@ -77,3 +77,29 @@ docker-compose up -d --build
 ```
 npx prisma migrate dev --name init
 ```
+
+Docker
+https://qiita.com/inakadegaebal/items/be9fecce813cebec5986
+
+```
+$ sudo yum remove docker docker-common docker-selinux docker-engine
+
+sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum makecache fast
+yum list docker-ce.x86_64 --showduplicates | sort -r
+
+
+sudo yum install docker-ce
+
+sudo systemctl start docker
+
+sudo docker run hello-world
+
+sudo groupadd docker
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+```
