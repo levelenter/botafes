@@ -15,5 +15,7 @@ COPY . .
 
 EXPOSE 3004
 
+RUN npm config set user 0
+RUN npm config set unsafe-perm true
 #CMD [ "npm", "run","prod" ]
-CMD [ "npm", "run","dev:sv" ]
+CMD [ "npm", "run", "dev:sv" ]
