@@ -10,7 +10,8 @@
     "seed": "npx prisma db seed",
     "_seed": "ts-node ./src/data/seed.ts --project tsconfig.seed.json",
     "studio": "npx prisma studio",
-    "db:migrate": "npx prisma migrate dev --name migrate"
+    "db:migrate": "npx prisma migrate dev --name migrate",
+    "start": "docker compose up --build"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} ./src/data/seed.ts"
