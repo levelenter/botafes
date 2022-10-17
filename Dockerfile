@@ -9,10 +9,11 @@ RUN npm install -g pm2
 COPY ./package.json .
 RUN npm install
 
+RUN npx prisma generate
 # アプリケーションコードをコンテナにコピー
 COPY . .
 
 EXPOSE 3004
 
 #CMD [ "npm", "run","prod" ]
-CMD [ "npm", "run","dev:sv" ]
+CMD ["sudo", "npm", "run","dev:sv" ]
