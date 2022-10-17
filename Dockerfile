@@ -6,7 +6,7 @@ WORKDIR /app
 RUN npm install -g pm2
 # キャッシュを利用するために、package.jsonとpackage-lock.jsonのみをコピーし、
 # 依存関係を先にインストール
-COPY ../../package*.json .
+COPY package*.json .
 RUN npm install
 
 # アプリケーションコードをコンテナにコピー
