@@ -9,7 +9,7 @@ services:
     #   - ./dist:/dist
     #   - ./docs:/docs
     ports:
-      - 3004:3004
+      - 3009:3004
     depends_on:
       - db
 
