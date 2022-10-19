@@ -29,12 +29,12 @@ AFRAME.registerComponent("start", {
     let ids = [0, 1, 2];
     button.addEventListener("click", async () => {
       clickSound.play();
-      await toggle();
       if (ids.length - 1 > current_id) {
         current_id++;
       } else {
-        current_id = 1;
+        current_id = 0;
       }
+      await toggle();
     });
     await toggle();
   },

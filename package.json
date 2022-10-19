@@ -1,4 +1,5 @@
 {
+  "version": "0.1.0",
   "scripts": {
     "dev:web": "webpack -w",
     "dev:sv": "ts-node ./src/server/index.ts",
