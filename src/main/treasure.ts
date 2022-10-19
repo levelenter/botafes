@@ -5,6 +5,7 @@ import { Treasure } from "../biz/Treasure";
 import { GlobalImport } from "../utils/GlobalImport";
 import { appendBody } from "../utils/include";
 import L from "leaflet";
+import { greenIcon } from "../biz/MapIcon";
 
 // 開始ページを読み込む
 const AFRAME = GlobalImport.getAFRAME();
@@ -42,6 +43,7 @@ function initMap() {
     maxZoom: 19,
     attribution: "© OpenStreetMap",
   }).addTo(leaflet);
+
   // L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", {
   //   attribution:
   //     "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
@@ -72,6 +74,11 @@ AFRAME.registerComponent("start", {
         "gps update handler start",
         `${treasures[0].distanceByMeter} メートル`
       );
+      // ユーザー位置を表示
+      L.marker([current.coords.latitude, current.coords.longitude], {
+        icon: greenIcon,
+      }).addTo(leaflet);
+
       treasures.forEach((t) => {
         const pos = t.getPosition();
         L.marker([pos.latitude, pos.longitude]).addTo(leaflet);
