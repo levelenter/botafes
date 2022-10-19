@@ -5,6 +5,7 @@
       { "imports": { "three": "https://threejs.org/build/three.module.js" } }
     </script>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <script type="text/javascript" src="../../js/aframe.min.js"></script>
     <script type="text/javascript" src="../../js/aframe-extras.min.js" ></script>
     <script type="text/javascript" src="../../js/aframe-ar-nft.js"></script>
@@ -23,9 +24,23 @@
       async
     ></script>
     <script type='text/javascript' src='https://binzume.github.io/aframe-vrm/dist/aframe-vrm.min.js'></script>
-    
+    <!-- Leaflet  -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+        integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
+        crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+        integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
+        crossorigin=""></script>
+      
+    <style>
+      body{
+        font-size: 0.625%;
+        overflow: hidden;
+      }
+    </style>
+
   </head>
-  <body style="margin: 0; overflow: hidden; height: 100%;">
+  <body style="margin: 0;width: 100%; height: 100%;">
     <a-scene
       embedded start
       vr-mode-ui="enabled: false;"
@@ -34,10 +49,9 @@
       gltf-model="dracoDecoderPath:../../js/draco/gltf/"
       gps-camera-debug
     >
-      <div style="position: fixed; top:20px;left:10px;background-color: white;" class="w-100">
+      <div style="position: fixed; top:20px;left:10px;background-color: white;" class="w-100 position-absolute top-0 start-0">
         <div >lat:<span id="lat"></span></div>
         <div >lng:<span id="lng"></span></div>
-        <div>distance:<span id="distance_label"></span></div>
         <div>sensor:<span id="sensor"></span></div>
       </div>
 
@@ -54,9 +68,21 @@
 <!--         look-at="&#91;gps-camera&#93;"
  -->
       <a-entity
-        id="treasure"
+        id="treasure1"
         gltf-model="#box"
       ></a-entity>
+
+      <a-entity
+        id="treasure2"
+        gltf-model="#box"
+      ></a-entity>
+
+      <a-entity
+        id="treasure3"
+        gltf-model="#box"
+      ></a-entity>
+
+
       <a-camera
         gps-camera="maxDistance:30"
         cursor="rayOrigin: mouse; fuse:false"

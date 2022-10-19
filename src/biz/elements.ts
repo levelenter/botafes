@@ -34,12 +34,15 @@ export function hide(element: HTMLElement) {
 type HtmlElementType =
   | "warp_btn"
   | "test"
-  | "treasure"
+  | "distance_label"
+  | "map"
+  | "treasure1"
+  | "treasure2"
+  | "treasure3"
   | "start_btn"
   | "start_page"
   | "open_button"
   | "sensor"
-  | "distance_label"
   | "lat"
   | "lng";
 

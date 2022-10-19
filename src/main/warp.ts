@@ -26,7 +26,7 @@ AFRAME.registerComponent("start", {
 
     const button = getElement("warp_btn");
     let current_id = 0;
-    let ids = [0, 1, 2, 3, 4];
+    let ids = [0, 1, 2];
     button.addEventListener("click", async () => {
       clickSound.play();
       await toggle();

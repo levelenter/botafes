@@ -1,7 +1,6 @@
 <style>
   .close_button {
     box-sizing: border-box;
-
     /* Auto layout */
 
     display: flex;
@@ -31,10 +30,10 @@
   aria-labelledby="descriptionDialogLabel"
   aria-hidden="true"
 >
-  <div class="modal-dialog modal-fullscreen-md-down">
+  <div class="modal-dialog modal-md-down">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="descriptionDialogLabel">説明</h5>
+        <h5 class="modal-title" id="descriptionDialogLabel">メッセージ</h5>
         <button
           type="button"
           class="btn-close"
@@ -44,7 +43,7 @@
       </div>
       <div class="modal-body">
         <div style="overflow-y: scroll">
-          <p id="descriptionBody"></p>
+          <p id="descriptionBody" style="line-height: 30px"></p>
         </div>
       </div>
       <div class="modal-footer d-flex justify-content-center">
