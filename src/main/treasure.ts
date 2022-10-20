@@ -1,123 +1,32 @@
-import { data as treasuresInitData } from "../biz/data";
 import { getElement, hide } from "../biz/elements";
-import { MapContext } from "../biz/MapContext";
-import { Treasure } from "../biz/Treasure";
 import { GlobalImport } from "../utils/GlobalImport";
 import { appendBody } from "../utils/include";
-import L from "leaflet";
-import "leaflet-compass";
-import { greenIcon } from "../biz/MapIcon";
+import { TreasureApplication } from "../biz/TreasureApplication";
+import "../a-components/look-at";
 
 // 開始ページを読み込む
 const AFRAME = GlobalImport.getAFRAME();
-appendBody("./sections/start_page.html").then(() => {
-  getElement("start_btn").addEventListener("click", () => {
-    hide(getElement("start_page"));
+appendBody("./sections/start_page.html")
+  .then(() => {
+    getElement("start_btn").addEventListener("click", () => {
+      hide(getElement("start_page"));
+    });
+  })
+  .catch((error) => {
+    console.error(error);
   });
+
+// エラーコンソール画面を取り込む
+appendBody("./sections/error_console.html").catch((error) => {
+  console.error(error);
 });
-
-appendBody("./sections/map.html").then(() => {
-  getElement("start_btn").addEventListener("click", () => {
-    hide(getElement("start_page"));
-  });
-});
-
-function endLoading() {
-  const loading_start = getElement("loading_start");
-  loading_start.classList.add("d-none");
-  const start_btn = getElement("start_btn");
-  start_btn.classList.remove("d-none");
-  start_btn.classList.add("d-block");
-}
-// function buildButtonWhenFindTreasure(isClear: boolean = false) {
-//   const button = getXREntity("open_button") as HTMLElement;
-//   if (isClear) {
-//     button.innerHTML = "";
-//     return;
-//   }
-//   button.setAttribute("class", "buttons");
-//   button.setAttribute("type", "button");
-//   button.addEventListener("click", () => {
-//     treasureBox.setAttribute("gltf-model", "./model/le_takarabako_open.glb");
-//   });
-//   button.textContent = "開く";
-// }
-
-function initMap() {
-  const leaflet = L.map("map").fitWorld();
-  leaflet.setView([35.4, 136], 5);
-  leaflet.locate({ setView: true, maxZoom: 16 });
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution: "© OpenStreetMap",
-  }).addTo(leaflet);
-  leaflet.addControl(new (L.Control as any).Compass());
-  // L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", {
-  //   attribution:
-  //     "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
-  // }).addTo(leaflet);
-  return leaflet;
-}
 
 /**
  * GPSARの開始処理
  */
 AFRAME.registerComponent("start", {
-  userMarker: L.marker({ lat: 0, lng: 0 }),
   init: function () {
-    // 地図を初期化
-    const leaflet = initMap();
-    /**
-     * GPSの位置が変更された時に起動するメソッド
-     * @param treasures
-     * @param map
-     * @param current
-     */
-    const onGpsUpdate = (
-      treasures: Treasure[],
-      map: MapContext,
-      current: GeolocationPosition
-    ) => {
-      console.log(
-        "gps update handler start",
-        `${treasures[0].distanceByMeter} メートル`
-      );
-      // ユーザー位置を表示
-      if (this.userMarker) leaflet.removeLayer(this.userMarker);
-      this.userMarker = L.marker(
-        [current.coords.latitude, current.coords.longitude],
-        {
-          icon: greenIcon,
-        }
-      ).addTo(leaflet);
-
-      treasures.forEach((t) => {
-        const pos = t.getPosition();
-        L.marker([pos.latitude, pos.longitude]).addTo(leaflet);
-      });
-      const distanceLabel = getElement("distance_label");
-      distanceLabel.innerHTML = `${treasures[0].distanceByMeter} メートル`;
-      console.log(treasures, current.coords);
-      console.log("gps update handler end");
-    };
-
-    /**
-     * 宝箱を設定する
-     */
-    const map = new MapContext(treasuresInitData);
-    // GPS初期化時のハンドラを追加
-    map.onGpsInit((t, map, cur) => {
-      endLoading();
-      onGpsUpdate(t, map, cur);
-    });
-    // GPS位置情報変更検知時のハンドラを追加
-    map.onLocationChange(onGpsUpdate);
-    /**
-     * 監視を開始する
-     */
-    map.watchStart().catch((error) => {
-      alert(error);
-      console.error(error);
-    });
+    const app = new TreasureApplication();
+    app.init();
   },
 });

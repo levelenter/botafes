@@ -32,6 +32,7 @@ export function hide(element: HTMLElement) {
   });
 }
 type HtmlElementType =
+  | "a-scene"
   | "warp_btn"
   | "test"
   | "distance_label"
@@ -53,8 +54,8 @@ export function getElement(id: HtmlElementType): HTMLButtonElement {
   return elm;
 }
 
-export function getXREntity(id: HtmlElementType): Entity {
-  const elm = document.getElementById(id) as any;
-  if (!elm) throw new Error(`${id}要素が取れませんでした`);
+export function getXREntity(selector: HtmlElementType): Entity {
+  const elm = document.querySelector(selector) as any;
+  if (!elm) throw new Error(`${selector}要素が取れませんでした`);
   return elm;
 }

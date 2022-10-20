@@ -67,20 +67,6 @@
       </a-assets>
 <!--         look-at="&#91;gps-camera&#93;"
  -->
-      <a-entity
-        id="treasure1"
-        gltf-model="#box"
-      ></a-entity>
-
-      <a-entity
-        id="treasure2"
-        gltf-model="#box"
-      ></a-entity>
-
-      <a-entity
-        id="treasure3"
-        gltf-model="#box"
-      ></a-entity>
 
       <a-camera
         gps-camera="maxDistance:30"
@@ -88,6 +74,7 @@
         rotation-reader
       >
       </a-camera>
+      <a-box color="red" scale="0.5 0.5 0.5" position="0 1.5 -4" look-at="target:#treasure1;always:true;"></a-box>
       
 
       <div id="open_button">

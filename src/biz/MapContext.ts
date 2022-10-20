@@ -56,7 +56,9 @@ export class MapContext {
    * @param treasures
    */
   private setupTreasures(treasures: any[]): Treasure[] {
-    return treasures.map((v) => new Treasure(v.lat, v.lng, v.title, v.el));
+    return treasures.map(
+      (v, index) => new Treasure(v.lat, v.lng, v.title, v.el, index)
+    );
   }
 
   /**

@@ -1,5 +1,6 @@
 import { GeoLocationUtils, Location } from "./GeoLocationUtils";
 import { Entity } from "aframe";
+import { Marker } from "leaflet";
 
 /**
  * 宝箱を表すオブジェクト、位置と対象との距離を保持
@@ -11,36 +12,43 @@ export class Treasure {
   private elementId = "";
   private _distanceByKiloMeter = 0;
 
+  public index = 0;
+  public leafletMarkerId = 0;
+  public leafletMarker = new Marker([0, 0]);
+
   constructor(
     latitude: number,
     longitude: number,
     title: string,
-    elementId: string
+    elementId: string,
+    index: number
   ) {
     this.latitude = latitude;
     this.longitude = longitude;
     this.title = title;
     this.elementId = elementId;
-    this.setAframePosition();
+    this.index = index;
   }
 
   /**
-   * AFrameのモデルエレメントに位置を設定
+   * AFrameのモデルエレメントを生成する（ID,初期モデル,位置を設定)
    */
-  private setAframePosition(): Entity {
-    const treasureEl = this.getElement();
-    treasureEl.setAttribute(
+  createAElement(): Entity {
+    const entity = document.createElement("a-entity");
+    entity.id = this.elementId;
+    entity.setAttribute("gltf-model", "#box");
+    entity.setAttribute(
       "gps-entity-place",
       `latitude:${this.latitude}; longitude:${this.longitude};`
     );
-    return treasureEl;
+    return entity;
   }
 
   /**
    * 宝箱のAFrameエレメントを取得
    * @returns
    */
-  getElement(): Entity {
+  getAElement(): Entity {
     const el = document.getElementById(this.elementId) as any;
     if (!el)
       throw new Error(`${this.elementId}:${this.title}要素が取れませんでした`);
@@ -68,7 +76,7 @@ export class Treasure {
    * @param path
    */
   setGltfModel(path: string) {
-    this.getElement().setAttribute("gltf-model", path);
+    this.getAElement().setAttribute("gltf-model", path);
   }
 
   /**
