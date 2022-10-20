@@ -33,6 +33,7 @@
     "graphql": "^15.3.0",
     "gsap": "^3.11.1",
     "howler": "^2.2.3",
-    "leaflet": "^1.9.2"
+    "leaflet": "^1.9.2",
+    "leaflet-compass": "^1.5.4"
   }
 }

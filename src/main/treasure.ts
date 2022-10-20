@@ -5,6 +5,7 @@ import { Treasure } from "../biz/Treasure";
 import { GlobalImport } from "../utils/GlobalImport";
 import { appendBody } from "../utils/include";
 import L from "leaflet";
+import "leaflet-compass";
 import { greenIcon } from "../biz/MapIcon";
 
 // 開始ページを読み込む
@@ -21,6 +22,13 @@ appendBody("./sections/map.html").then(() => {
   });
 });
 
+function endLoading() {
+  const loading_start = getElement("loading_start");
+  loading_start.classList.add("d-none");
+  const start_btn = getElement("start_btn");
+  start_btn.classList.remove("d-none");
+  start_btn.classList.add("d-block");
+}
 // function buildButtonWhenFindTreasure(isClear: boolean = false) {
 //   const button = getXREntity("open_button") as HTMLElement;
 //   if (isClear) {
@@ -43,7 +51,7 @@ function initMap() {
     maxZoom: 19,
     attribution: "© OpenStreetMap",
   }).addTo(leaflet);
-
+  leaflet.addControl(new (L.Control as any).Compass());
   // L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", {
   //   attribution:
   //     "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
@@ -55,10 +63,10 @@ function initMap() {
  * GPSARの開始処理
  */
 AFRAME.registerComponent("start", {
+  userMarker: L.marker({ lat: 0, lng: 0 }),
   init: function () {
     // 地図を初期化
     const leaflet = initMap();
-
     /**
      * GPSの位置が変更された時に起動するメソッド
      * @param treasures
@@ -75,9 +83,13 @@ AFRAME.registerComponent("start", {
         `${treasures[0].distanceByMeter} メートル`
       );
       // ユーザー位置を表示
-      L.marker([current.coords.latitude, current.coords.longitude], {
-        icon: greenIcon,
-      }).addTo(leaflet);
+      if (this.userMarker) leaflet.removeLayer(this.userMarker);
+      this.userMarker = L.marker(
+        [current.coords.latitude, current.coords.longitude],
+        {
+          icon: greenIcon,
+        }
+      ).addTo(leaflet);
 
       treasures.forEach((t) => {
         const pos = t.getPosition();
@@ -94,7 +106,10 @@ AFRAME.registerComponent("start", {
      */
     const map = new MapContext(treasuresInitData);
     // GPS初期化時のハンドラを追加
-    map.onGpsInit(onGpsUpdate);
+    map.onGpsInit((t, map, cur) => {
+      endLoading();
+      onGpsUpdate(t, map, cur);
+    });
     // GPS位置情報変更検知時のハンドラを追加
     map.onLocationChange(onGpsUpdate);
     /**

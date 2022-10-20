@@ -36,6 +36,7 @@ type HtmlElementType =
   | "test"
   | "distance_label"
   | "map"
+  | "loading_start"
   | "treasure1"
   | "treasure2"
   | "treasure3"
