@@ -83,9 +83,10 @@
       </a-assets>
 
       <a-camera
-        gps-camera="maxDistance:30"
+        gps-camera="maxDistance:30;gpsMinDistance: 5"
         cursor="rayOrigin: mouse; fuse:false"
         rotation-reader
+        arjs-look-controls='smoothingFactor: 0.1' 
       >
       </a-camera>
 

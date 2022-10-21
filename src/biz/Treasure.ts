@@ -1,6 +1,7 @@
 import { GeoLocationUtils, Location } from "./GeoLocationUtils";
 import { Entity } from "aframe";
 import { Marker } from "leaflet";
+import { waitAnimationFrame } from "../utils/animationFrame";
 
 /**
  * 宝箱を表すオブジェクト、位置と対象との距離を保持
@@ -86,6 +87,16 @@ export class Treasure {
   setGltfModel(path: string) {
     this.getAElement().removeAttribute("gltf-model");
     this.getAElement().setAttribute("gltf-model", path);
+  }
+
+  async openEfect() {
+    const model = this.getAElement();
+    // model.object3D.rotateY(1);
+    for (let i = 0; i <= 62; i++) {
+      await waitAnimationFrame();
+      // model.object3D.rotateX(i);
+      model.object3D.rotation.y += 0.1;
+    }
   }
 
   /**

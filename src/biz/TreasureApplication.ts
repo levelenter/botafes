@@ -142,6 +142,7 @@ export class TreasureApplication {
       const marker = L.marker([pos.latitude, pos.longitude]).addTo(
         this.leafletMap
       );
+      marker.setIcon(redIcon);
       t.leafletMarker = marker;
 
       // マーカーのクリックイベント
@@ -198,15 +199,16 @@ export class TreasureApplication {
       this.showMapTitle(`${current.coords.heading}`);
 
       // 最寄りのマーカーを赤にする
-      this.mapContext.treasureMarkerColorChange(nearestTreasure.leafletMarker);
+      // this.mapContext.treasureMarkerColorChange(nearestTreasure.leafletMarker);
 
       // 最寄り宝箱がNearになったら
-      if (nearestTreasure.distanceByMeter < 10) {
+      if (nearestTreasure.distanceByMeter < 15) {
         // BoxOpenボタン
         const boxOpenButton = new BoxOpenButton();
         const btn = boxOpenButton.showOpenBoxButton();
-        btn.addEventListener("click", () => {
+        btn.addEventListener("click", async () => {
           nearestTreasure.setGltfModel("#open_box");
+          await nearestTreasure.openEfect();
           btn.remove();
         });
       }
