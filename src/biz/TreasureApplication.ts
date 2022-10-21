@@ -1,10 +1,10 @@
 import { Treasure } from "./Treasure";
 import { MapContext } from "../biz/MapContext";
-import { data as treasuresInitData } from "../biz/data";
+import { treasuresInitData } from "../biz/data";
 import L, { LatLng, Map, Marker } from "leaflet";
 import { getElement, getXREntity } from "./elements";
 import { appendBody } from "../utils/include";
-import { blueIcon, greenIcon, redIcon } from "./MapIcon";
+import { blueIcon, greenIcon, personIcon, redIcon } from "./MapIcon";
 
 /**
  * Leafletマップと宝箱を統合
@@ -34,6 +34,38 @@ export class TreasureApplication {
     const start_btn = getElement("start_btn");
     start_btn.classList.remove("d-none");
     start_btn.classList.add("d-block");
+  }
+
+  clickMapResize() {
+    const resize = getElement("resize_button");
+    resize.addEventListener("click", () => {
+      const map = getElement("map_tab");
+      if (map.classList.contains("map_default")) {
+        map.classList.remove("map_default");
+        map.classList.add("map_max");
+        getElement("resize_button")
+          .querySelector("img")
+          ?.setAttribute("src", "../../assets/down.png");
+        return;
+      }
+      if (map.classList.contains("map_max")) {
+        map.classList.remove("map_max");
+        map.classList.add("map_min");
+        getElement("resize_button")
+          .querySelector("img")
+          ?.setAttribute("src", "../../assets/up.png");
+        return;
+      }
+      if (map.classList.contains("map_min")) {
+        map.classList.remove("map_min");
+        map.classList.add("map_default");
+        getElement("resize_button")
+          .querySelector("img")
+          ?.setAttribute("src", "../../assets/up.png");
+
+        return;
+      }
+    });
   }
 
   initMap() {
@@ -68,7 +100,7 @@ export class TreasureApplication {
       current.coords.latitude,
       current.coords.longitude
     );
-    this.userMarker = L.marker(currentLatLang, { icon: greenIcon }).addTo(
+    this.userMarker = L.marker(currentLatLang, { icon: personIcon }).addTo(
       this.leafletMap
     );
 
@@ -143,9 +175,13 @@ export class TreasureApplication {
     // 地図を初期化
     this._leaflet = this.initMap();
 
+    // マップのリサイズボタンにハンドラを設定
+    this.clickMapResize();
+
     /**
      * 宝箱を設定する
      */
+    console.log("treasuresInitData", treasuresInitData);
     const map = new MapContext(treasuresInitData);
 
     // GPS初期化時のハンドラを追加

@@ -1,4 +1,12 @@
-export const data = [
+export type TreasureData = {
+  id: number;
+  lat: number;
+  lng: number;
+  title: string;
+  el: string;
+};
+
+export const data: TreasureData[] = [
   {
     id: 1,
     lat: 34.6745469127447,
@@ -14,3 +22,27 @@ export const data = [
     el: "treasure2",
   },
 ];
+
+export const treasuresInitData = (() => {
+  const s = location.search;
+  const searchString = s.substring(1, s.length);
+  const params = searchString.split("&");
+  if (params.length > 0) {
+    const paramsJson: (TreasureData | null)[] = params.map((p, i) => {
+      const paramItem = p.split("=");
+      if (paramItem.length <= 0) return null;
+      const latlang = JSON.parse(paramItem[1]);
+      console.log("treasuresInitData", latlang);
+      return {
+        id: i + 1,
+        lat: parseFloat(latlang[0]),
+        lng: parseFloat(latlang[1]),
+        title: paramItem[0],
+        el: `treasure${i + 1}`,
+      };
+    });
+    return paramsJson.filter((p) => p);
+  } else {
+    return data;
+  }
+})();

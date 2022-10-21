@@ -23,6 +23,13 @@
       crossorigin="anonymous"
       async
     ></script>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.3/css/all.css"
+      integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk"
+      crossorigin="anonymous"
+    />
+
     <script type='text/javascript' src='https://binzume.github.io/aframe-vrm/dist/aframe-vrm.min.js'></script>
     <!-- Leaflet  -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
@@ -49,12 +56,6 @@
       gltf-model="dracoDecoderPath:../../js/draco/gltf/"
       gps-camera-debug
     >
-      <div style="position: fixed; top:20px;left:10px;background-color: white;" class="w-100 position-absolute top-0 start-0">
-        <div >lat:<span id="lat"></span></div>
-        <div >lng:<span id="lng"></span></div>
-        <div>sensor:<span id="sensor"></span></div>
-      </div>
-
       <a-assets>
         <a-asset-item
           id="box"
@@ -65,8 +66,6 @@
           src="../../assets/le_takarabako_open.glb"
         ></a-asset-item>
       </a-assets>
-<!--         look-at="&#91;gps-camera&#93;"
- -->
 
       <a-camera
         gps-camera="maxDistance:30"
@@ -74,8 +73,6 @@
         rotation-reader
       >
       </a-camera>
-      <a-box color="red" scale="0.5 0.5 0.5" position="0 1.5 -4" look-at="target:#treasure1;always:true;"></a-box>
-      
 
       <div id="open_button">
         <button >open</button>

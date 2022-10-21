@@ -8,6 +8,9 @@ import "../a-components/look-at";
 const AFRAME = GlobalImport.getAFRAME();
 appendBody("./sections/start_page.html")
   .then(() => {
+    const app = new TreasureApplication();
+    app.init();
+
     getElement("start_btn").addEventListener("click", () => {
       hide(getElement("start_page"));
     });
@@ -26,7 +29,7 @@ appendBody("./sections/error_console.html").catch((error) => {
  */
 AFRAME.registerComponent("start", {
   init: function () {
-    const app = new TreasureApplication();
-    app.init();
+    // const app = new TreasureApplication();
+    // app.init();
   },
 });

@@ -46,7 +46,9 @@ type HtmlElementType =
   | "open_button"
   | "sensor"
   | "lat"
-  | "lng";
+  | "lng"
+  | "resize_button"
+  | "map_tab";
 
 export function getElement(id: HtmlElementType): HTMLButtonElement {
   const elm = document.getElementById(id) as HTMLButtonElement;
