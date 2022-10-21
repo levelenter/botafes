@@ -6,18 +6,6 @@ import "../a-components/look-at";
 
 // 開始ページを読み込む
 const AFRAME = GlobalImport.getAFRAME();
-appendBody("./sections/start_page.html")
-  .then(() => {
-    const app = new TreasureApplication();
-    app.init();
-
-    getElement("start_btn").addEventListener("click", () => {
-      hide(getElement("start_page"));
-    });
-  })
-  .catch((error) => {
-    console.error(error);
-  });
 
 // エラーコンソール画面を取り込む
 appendBody("./sections/error_console.html").catch((error) => {
@@ -29,7 +17,13 @@ appendBody("./sections/error_console.html").catch((error) => {
  */
 AFRAME.registerComponent("start", {
   init: function () {
-    // const app = new TreasureApplication();
-    // app.init();
+    const app = new TreasureApplication();
+    app.init().then(() => {
+      console.log("start treasure app");
+    });
+
+    getElement("start_btn").addEventListener("click", () => {
+      hide(getElement("start_page"));
+    });
   },
 });

@@ -35,7 +35,7 @@ type HtmlElementType =
   | "a-scene"
   | "warp_btn"
   | "test"
-  | "distance_label"
+  | "map_title_label"
   | "map"
   | "loading_start"
   | "treasure1"
@@ -48,6 +48,7 @@ type HtmlElementType =
   | "lat"
   | "lng"
   | "resize_button"
+  | "open_box_button"
   | "map_tab";
 
 export function getElement(id: HtmlElementType): HTMLButtonElement {

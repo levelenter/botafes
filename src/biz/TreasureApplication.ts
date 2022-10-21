@@ -1,3 +1,4 @@
+import { BoxOpenButton, ResizeButton } from "./ButtonActions";
 import { Treasure } from "./Treasure";
 import { MapContext } from "../biz/MapContext";
 import { treasuresInitData } from "../biz/data";
@@ -13,6 +14,7 @@ export class TreasureApplication {
   private _leaflet: Map | null = null;
   userMarker = L.marker({ lat: 0, lng: 0 });
   targetTreasureIndex = 0;
+  private mapContext = new MapContext([]);
 
   /** 最新の現在位置情報を保持 */
   private currentGpsPos: GeolocationPosition | null = null;
@@ -36,37 +38,7 @@ export class TreasureApplication {
     start_btn.classList.add("d-block");
   }
 
-  clickMapResize() {
-    const resize = getElement("resize_button");
-    resize.addEventListener("click", () => {
-      const map = getElement("map_tab");
-      if (map.classList.contains("map_default")) {
-        map.classList.remove("map_default");
-        map.classList.add("map_max");
-        getElement("resize_button")
-          .querySelector("img")
-          ?.setAttribute("src", "../../assets/down.png");
-        return;
-      }
-      if (map.classList.contains("map_max")) {
-        map.classList.remove("map_max");
-        map.classList.add("map_min");
-        getElement("resize_button")
-          .querySelector("img")
-          ?.setAttribute("src", "../../assets/up.png");
-        return;
-      }
-      if (map.classList.contains("map_min")) {
-        map.classList.remove("map_min");
-        map.classList.add("map_default");
-        getElement("resize_button")
-          .querySelector("img")
-          ?.setAttribute("src", "../../assets/up.png");
-
-        return;
-      }
-    });
-  }
+  clickMapResize() {}
 
   initMap() {
     const leaflet = L.map("map").fitWorld();
@@ -105,11 +77,18 @@ export class TreasureApplication {
     );
 
     // 目標までの距離の更新
-    const distanceLabel = getElement("distance_label");
-    distanceLabel.innerHTML = `${
-      treasures[this.targetTreasureIndex].distanceByMeter
-    } メートル`;
+    this.showMapTitle(
+      `${treasures[this.targetTreasureIndex].distanceByMeter} メートル`
+    );
   };
+
+  /**
+   * マップのタイトルバーに表示する
+   */
+  showMapTitle(title: string) {
+    const distanceLabel = getElement("map_title_label");
+    distanceLabel.innerHTML = title;
+  }
 
   /**
    * 宝箱のAエンティティをシーンに追加
@@ -133,19 +112,21 @@ export class TreasureApplication {
     currentTreasure: Treasure,
     treasures: Treasure[]
   ) {
-    // 宝箱マーカークリック時
-    marker.addEventListener("click", (event) => {
-      currentTreasure.leafletMarkerId = event.target._leaflet_id;
-      // すべてのマーカーの色をいったんもどす
-      treasures.forEach((t) => t.leafletMarker.setIcon(blueIcon));
-      // 対象のマーカーだけを赤にする
-      marker.setIcon(redIcon);
-      this.targetTreasureIndex = currentTreasure.index;
+    marker
+      .bindPopup(
+        `${currentTreasure.title}:${currentTreasure.distanceByMeter}メートル`,
+        { autoPan: true }
+      )
+      .openPopup();
 
-      if (!this.currentGpsPos)
-        throw new Error("現在位置のキャッシュが取得できていません");
-      this.onGpsUpdate(treasures, this.currentGpsPos);
-    });
+    // 宝箱マーカークリック時
+    // marker.addEventListener("click", (event) => {
+    //   currentTreasure.leafletMarkerId = event.target._leaflet_id;
+
+    //   if (!this.currentGpsPos)
+    //     throw new Error("現在位置のキャッシュが取得できていません");
+    //   this.onGpsUpdate(treasures, this.currentGpsPos);
+    // });
     return marker;
   }
 
@@ -170,22 +151,25 @@ export class TreasureApplication {
     });
   }
 
+  /**
+   * アプリケーション初期化
+   */
   async init() {
     await appendBody("./sections/map.html");
     // 地図を初期化
     this._leaflet = this.initMap();
 
     // マップのリサイズボタンにハンドラを設定
-    this.clickMapResize();
+    new ResizeButton().setupMapResizeButton();
 
     /**
      * 宝箱を設定する
      */
     console.log("treasuresInitData", treasuresInitData);
-    const map = new MapContext(treasuresInitData);
+    this.mapContext = new MapContext(treasuresInitData);
 
     // GPS初期化時のハンドラを追加
-    map.onGpsInit((treasures, map, current) => {
+    this.mapContext.onGpsInit((treasures, map, current) => {
       // スタート画面のローディング表記を解除
       this.endLoading();
 
@@ -202,18 +186,44 @@ export class TreasureApplication {
     });
 
     // GPS位置情報変更検知時のハンドラを追加
-    map.onLocationChange((treasures, map, current) => {
+    this.mapContext.onLocationChange((treasures, map, current) => {
+      // 一番近い宝箱をターゲットにする
+      const nearestTreasure = treasures.reduce(
+        (p, c) => (p.distanceByKiloMeter > c.distanceByKiloMeter ? c : p),
+        treasures[0]
+      );
+      this.targetTreasureIndex = nearestTreasure.index;
+
+      // 自分の向きを表示
+      this.showMapTitle(`${current.coords.heading}`);
+
+      // 最寄りのマーカーを赤にする
+      this.mapContext.treasureMarkerColorChange(nearestTreasure.leafletMarker);
+
+      // 最寄り宝箱がNearになったら
+      if (nearestTreasure.distanceByMeter < 10) {
+        // BoxOpenボタン
+        const boxOpenButton = new BoxOpenButton();
+        const btn = boxOpenButton.showOpenBoxButton();
+        btn.addEventListener("click", () => {
+          nearestTreasure.setGltfModel("#open_box");
+          btn.remove();
+        });
+      }
+
       // 宝箱を開ける処理
-      // treasures.forEach((t)=>{
-      //   t.setGltfModel("open_box")
-      // })
+      treasures.forEach((t) => {
+        t.leafletMarker.setPopupContent(t.popUpContent);
+      });
+
+      // 位置の更新
       this.onGpsUpdate(treasures, current);
     });
 
     /**
      * GPS移動の監視を開始する
      */
-    map.watchStart().catch((error: any) => {
+    this.mapContext.watchStart().catch((error: any) => {
       alert(error);
       console.error(error);
     });

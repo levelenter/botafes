@@ -1,3 +1,5 @@
+import { blueIcon, redIcon } from "./MapIcon";
+import { Marker } from "leaflet";
 import { GeoLocationUtils, Location } from "./GeoLocationUtils";
 import { Treasure } from "./Treasure";
 
@@ -20,6 +22,17 @@ export class MapContext {
 
   private _onGpsInit: EventHandler | null = null;
   private _onLocationChange: EventHandler | null = null;
+
+  /**
+   * 宝箱のマーカーの選択色を変更する
+   * @param marker
+   */
+  treasureMarkerColorChange(marker: Marker) {
+    // すべてのマーカーの色をいったんもどす
+    this.treasures.forEach((t) => t.leafletMarker.setIcon(blueIcon));
+    // 対象のマーカーだけを赤にする
+    marker.setIcon(redIcon);
+  }
 
   /**
    * Gpsの初期化時のイベントハンドラを設定

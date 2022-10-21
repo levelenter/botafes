@@ -1,3 +1,5 @@
+import { UrlParamUtils } from "../utils/UrlParamUtils";
+
 export type TreasureData = {
   id: number;
   lat: number;
@@ -24,26 +26,8 @@ export const data: TreasureData[] = [
 ];
 
 export const treasuresInitData = (() => {
-  const s = new URLSearchParams(location.search);
-  const params = Array.from(s.entries());
-  console.log("treasuresInitData1", params);
-  if (params.length > 0) {
-    const paramsJson: (TreasureData | null)[] = params.map((p, i) => {
-      console.log("treasuresInitData", p[0], p[1]);
-      const paramItem = p[0];
-      if (p.length <= 0) return null;
-      const latlang = JSON.parse(p[1]);
-      console.log("treasuresInitData", latlang);
-      return {
-        id: i + 1,
-        lat: parseFloat(latlang[0]),
-        lng: parseFloat(latlang[1]),
-        title: paramItem,
-        el: `treasure${i + 1}`,
-      };
-    });
-    return paramsJson.filter((p) => p);
-  } else {
-    return data;
-  }
+  const array = UrlParamUtils.getParamArray();
+  return array.length > 0
+    ? UrlParamUtils.getDataFromParam(array).filter((p) => p)
+    : data;
 })();

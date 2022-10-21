@@ -8,7 +8,7 @@ import { Marker } from "leaflet";
 export class Treasure {
   private latitude = 0;
   private longitude = 0;
-  private title = "";
+  private _title = "";
   private elementId = "";
   private _distanceByKiloMeter = 0;
 
@@ -25,9 +25,13 @@ export class Treasure {
   ) {
     this.latitude = latitude;
     this.longitude = longitude;
-    this.title = title;
+    this._title = title;
     this.elementId = elementId;
     this.index = index;
+  }
+
+  get title() {
+    return this._title;
   }
 
   /**
@@ -71,11 +75,16 @@ export class Treasure {
     return distanceLength;
   }
 
+  get popUpContent() {
+    return `${this.distanceByMeter}メートル`;
+  }
+
   /**
    * 宝箱のglTFモデルを設定/置き換える
    * @param path
    */
   setGltfModel(path: string) {
+    this.getAElement().removeAttribute("gltf-model");
     this.getAElement().setAttribute("gltf-model", path);
   }
 
