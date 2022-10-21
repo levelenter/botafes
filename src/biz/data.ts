@@ -24,20 +24,21 @@ export const data: TreasureData[] = [
 ];
 
 export const treasuresInitData = (() => {
-  const s = location.search;
-  const searchString = s.substring(1, s.length);
-  const params = searchString.split("&");
+  const s = new URLSearchParams(location.search);
+  const params = Array.from(s.entries());
+  console.log("treasuresInitData1", params);
   if (params.length > 0) {
     const paramsJson: (TreasureData | null)[] = params.map((p, i) => {
-      const paramItem = p.split("=");
-      if (paramItem.length <= 0) return null;
-      const latlang = JSON.parse(paramItem[1]);
+      console.log("treasuresInitData", p[0], p[1]);
+      const paramItem = p[0];
+      if (p.length <= 0) return null;
+      const latlang = JSON.parse(p[1]);
       console.log("treasuresInitData", latlang);
       return {
         id: i + 1,
         lat: parseFloat(latlang[0]),
         lng: parseFloat(latlang[1]),
-        title: paramItem[0],
+        title: paramItem,
         el: `treasure${i + 1}`,
       };
     });
