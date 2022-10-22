@@ -58,6 +58,24 @@
         order: 0;
         flex-grow: 0;
       }
+      .btn-round{
+        box-sizing: border-box;
+        padding: 18px 62px;
+        gap: 6px;
+        background: #373535;
+        border: 1px solid #373535;
+        border-radius: 91px;
+        color: #FFFFFF;
+
+      }
+      .basefont{
+        font-family: 'Montserrat';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 20px;
+        line-height: 27px;
+        letter-spacing: 0.1em;
+      }
 
     </style>
 
@@ -96,20 +114,26 @@
       class="position-absolute top-0 start-0 w-100 d-flex align-items-center justify-content-center"
       style="height: 100vh; background-color: white; z-index: 1020"
     >
-      <div>
-        <div id="ar_start_label" class="mb-5 basefont">宝探しAR</div>
-        <div class="mb-5">
-          <!-- <img src="../../img/ar_desc/img.png" loading="eager" /> -->
+      <div class="d-flex flex-column w-100">
+        <div id="ar_start_label" class="mb-3 w-100 basefont d-flex justify-content-center text-center ">宝探しAR</div>
+        <div id="loading_start" class="basefont d-block d-flex justify-content-center w-100 text-center" >
+          ロード中です<BR>しばらくお待ち下さい
         </div>
-        <div id="loading_start" class="w-100 text-center">
-          ロード中です。しばらくお待ち下さい。
+        <div class="d-flex justify-content-center w-100" >
+          <button id="start_btn" class="btn-round basefont d-none w-100 mx-3">
+            スタート
+          </button>
         </div>
-        <div id="start_btn" class="d-none">
-          <img src="../../img/start_btn.svg" />
+        <div class="d-flex justify-content-center mt-3" >
+          <button id="ending_btn" class="btn-round basefont d-none w-100 mx-3">
+            ゴール画面を再表示
+          </button>
         </div>
+
+
       </div>
-    </div>
-    <div class="d-flex text-center position-absolute translate-middle start-50 top-50 ">
+  </div>
+    <div class="d-flex text-center position-absolute translate-middle start-50 top-50 " style="z-index: 1000;">
       <button id="open_box_button" class="btn btn-info btn-lg d-none" >宝箱を開ける</button>
     </div>
     

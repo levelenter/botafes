@@ -42,6 +42,7 @@ type HtmlElementType =
   | "treasure2"
   | "treasure3"
   | "start_btn"
+  | "ending_btn"
   | "start_page"
   | "open_button"
   | "sensor"

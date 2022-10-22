@@ -1,10 +1,10 @@
 import { checkTreasure, data, saveState } from "./data";
 import { BoxOpenButton, ResizeButton } from "./ButtonActions";
 import { Treasure } from "./Treasure";
-import { MapContext } from "../biz/MapContext";
+import { TreasuresContext } from "./TreasuresContext";
 import { treasuresInitData } from "../biz/data";
 import L, { LatLng, Map, Marker } from "leaflet";
-import { getElement, getXREntity } from "./elements";
+import { getElement, getXREntity, hide } from "./elements";
 import { appendBody } from "../utils/include";
 import { okIcon, personIcon, redIcon } from "./MapIcon";
 import { dialogOpen } from "../utils/dialogOpen";
@@ -17,7 +17,7 @@ export class TreasureApplication {
   userMarker = L.marker({ lat: 0, lng: 0 });
   targetTreasureIndex = 0;
 
-  private mapContext = new MapContext([]);
+  private mapContext = new TreasuresContext([]);
 
   /**
    * MapのインスタンスNon null
@@ -38,8 +38,10 @@ export class TreasureApplication {
     start_btn.classList.add("d-block");
   }
 
-  clickMapResize() {}
-
+  /**
+   * Leafletマップを初期化する
+   * @returns
+   */
   initMap() {
     const leaflet = L.map("map").fitWorld();
     leaflet.setView([35.4, 136], 5);
@@ -59,7 +61,7 @@ export class TreasureApplication {
    */
   onGpsUpdate = (
     treasures: Treasure[],
-    map: MapContext,
+    map: TreasuresContext,
     current: GeolocationPosition
   ) => {
     // ユーザー位置にマーカーを表示(削除・挿入)
@@ -82,6 +84,15 @@ export class TreasureApplication {
   showMapTitle(title: string) {
     const distanceLabel = getElement("map_title_label");
     distanceLabel.innerHTML = title;
+  }
+
+  /**
+   * 終了画面を表示する
+   */
+  showEnding() {
+    dialogOpen("completeDialog");
+    const video = getElement("complete_video") as HTMLVideoElement;
+    video.play().then();
   }
 
   /**
@@ -148,8 +159,8 @@ export class TreasureApplication {
     /**
      * 宝箱を設定する
      */
-    console.log("treasuresInitData", treasuresInitData);
-    this.mapContext = new MapContext(treasuresInitData);
+    // console.log("treasuresInitData", treasuresInitData);
+    this.mapContext = new TreasuresContext(treasuresInitData);
 
     ///////////////////////////////
     // GPS初期化時の処理
@@ -160,6 +171,13 @@ export class TreasureApplication {
 
       // 宝箱マーカーをセット
       this.setTreasureMarkers(treasures);
+
+      if (map.isComplete) {
+        const endBtn = getElement("ending_btn");
+        endBtn.classList.remove("d-none");
+        endBtn.classList.remove("d-block");
+        endBtn.addEventListener("click", () => this.showEnding());
+      }
 
       /**
        * 宝箱エンティティをシーンに追加
@@ -198,9 +216,7 @@ export class TreasureApplication {
 
           btn.remove();
           if (map.isComplete) {
-            dialogOpen("completeDialog");
-            const video = getElement("complete_video") as HTMLVideoElement;
-            video.play().then();
+            this.showEnding();
           }
         });
       }
