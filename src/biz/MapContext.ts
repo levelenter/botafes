@@ -36,6 +36,10 @@ export class MapContext {
     return `のこりのタカラは${this.openedTreasureCount}/${this.treasureCount}個`;
   }
 
+  get isComplete() {
+    return this.treasureCount <= this.openedTreasureCount;
+  }
+
   openTreasure(t: Treasure) {
     this.openedTreasures.push(t);
   }

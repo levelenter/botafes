@@ -7,6 +7,7 @@ import L, { LatLng, Map, Marker } from "leaflet";
 import { getElement, getXREntity } from "./elements";
 import { appendBody } from "../utils/include";
 import { okIcon, personIcon, redIcon } from "./MapIcon";
+import { dialogOpen } from "../utils/dialogOpen";
 
 /**
  * Leafletマップと宝箱を統合
@@ -180,9 +181,6 @@ export class TreasureApplication {
       );
       this.targetTreasureIndex = nearestTreasure.index;
 
-      // 自分の向きを表示
-      this.showMapTitle(`${current.coords.heading}`);
-
       // 最寄り宝箱がNearになったら
       if (nearestTreasure.distanceByMeter < 15) {
         // BoxOpenボタン
@@ -199,6 +197,11 @@ export class TreasureApplication {
           checkTreasure(nearestTreasure.index);
 
           btn.remove();
+          if (map.isComplete) {
+            dialogOpen("completeDialog");
+            const video = getElement("complete_video") as HTMLVideoElement;
+            video.play().then();
+          }
         });
       }
 

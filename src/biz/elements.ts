@@ -49,10 +49,12 @@ type HtmlElementType =
   | "lng"
   | "resize_button"
   | "open_box_button"
-  | "map_tab";
+  | "map_tab"
+  | "completeDialog"
+  | "complete_video";
 
-export function getElement(id: HtmlElementType): HTMLButtonElement {
-  const elm = document.getElementById(id) as HTMLButtonElement;
+export function getElement(id: HtmlElementType): HTMLElement {
+  const elm = document.getElementById(id) as HTMLElement;
   if (!elm) throw new Error(`${id}要素が取れませんでした`);
   return elm;
 }

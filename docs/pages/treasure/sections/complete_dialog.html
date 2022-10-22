@@ -25,32 +25,31 @@
 </style>
 <div
   class="modal fade"
-  id="descriptionDialog"
+  id="completeDialog"
   tabindex="-1"
-  aria-labelledby="descriptionDialogLabel"
+  aria-labelledby="completeDialogLabel"
   aria-hidden="true"
 >
-  <div class="modal-dialog modal-md-down">
+  <div class="modal-dialog modal-fullscreen">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="descriptionDialogLabel">メッセージ</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
       <div class="modal-body">
-        <div style="overflow-y: scroll">
-          <p id="descriptionBody" style="line-height: 30px"></p>
+        <div style="overflow-y: scroll" class="d-flex flex-column text-center">
+          <p id="completeDialogBody" style="line-height: 30px; font-size: 2rem">
+            おめでとうございます！すべての宝箱をゲットしました！
+          </p>
+          <video
+            class="w-100"
+            id="complete_video"
+            src="../../assets/complete_anim.mp4"
+            style="height: 30rem"
+          ></video>
         </div>
       </div>
-      <div class="modal-footer d-flex justify-content-center">
+      <!-- <div class="modal-footer d-flex justify-content-center">
         <button type="button" class="close_button" data-bs-dismiss="modal">
           閉じる
         </button>
-      </div>
+      </div> -->
     </div>
   </div>
 </div>

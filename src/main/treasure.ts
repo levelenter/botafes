@@ -11,6 +11,9 @@ const AFRAME = GlobalImport.getAFRAME();
 appendBody("./sections/error_console.html").catch((error) => {
   console.error(error);
 });
+appendBody("./sections/complete_dialog.html").catch((error) => {
+  console.error(error);
+});
 
 /**
  * GPSARの開始処理

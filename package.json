@@ -8,7 +8,8 @@
     "prod:sv": "pm2 start config/pm2.config.json --env production",
     "prod:tsc": "tsc",
     "check-env": "node -e 'console.log(process.env)' | grep npm",
-    "serve": "pm2 start"
+    "serve": "pm2 start",
+    "cl": "tplant --input src/**/*.ts --output __dev/Treasure.svg"
   },
   "devDependencies": {
     "@types/compression": "^1.7.2",
@@ -17,6 +18,7 @@
     "@types/leaflet": "^1.9.0",
     "@types/node": "^18.11.0",
     "npm-run-all": "^4.1.5",
+    "tplant": "^3.1.0",
     "ts-loader": "^9.3.1",
     "ts-node": "^10.9.1",
     "typescript": "^4.8.3",
