@@ -1,3 +1,4 @@
+import { checkTreasure, data, saveState } from "./data";
 import { BoxOpenButton, ResizeButton } from "./ButtonActions";
 import { Treasure } from "./Treasure";
 import { MapContext } from "../biz/MapContext";
@@ -5,7 +6,7 @@ import { treasuresInitData } from "../biz/data";
 import L, { LatLng, Map, Marker } from "leaflet";
 import { getElement, getXREntity } from "./elements";
 import { appendBody } from "../utils/include";
-import { blueIcon, greenIcon, personIcon, redIcon } from "./MapIcon";
+import { okIcon, personIcon, redIcon } from "./MapIcon";
 
 /**
  * Leafletマップと宝箱を統合
@@ -14,10 +15,8 @@ export class TreasureApplication {
   private _leaflet: Map | null = null;
   userMarker = L.marker({ lat: 0, lng: 0 });
   targetTreasureIndex = 0;
-  private mapContext = new MapContext([]);
 
-  /** 最新の現在位置情報を保持 */
-  private currentGpsPos: GeolocationPosition | null = null;
+  private mapContext = new MapContext([]);
 
   /**
    * MapのインスタンスNon null
@@ -48,13 +47,6 @@ export class TreasureApplication {
       maxZoom: 19,
       attribution: "© OpenStreetMap",
     }).addTo(leaflet);
-    // leaflet.addControl(new (L.Control as any).Compass());
-
-    // 国土地理院のマップの場合
-    // L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", {
-    //   attribution:
-    //     "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
-    // }).addTo(leaflet);
     return leaflet;
   }
 
@@ -64,8 +56,11 @@ export class TreasureApplication {
    * @param map
    * @param current
    */
-  onGpsUpdate = (treasures: Treasure[], current: GeolocationPosition) => {
-    this.currentGpsPos = current;
+  onGpsUpdate = (
+    treasures: Treasure[],
+    map: MapContext,
+    current: GeolocationPosition
+  ) => {
     // ユーザー位置にマーカーを表示(削除・挿入)
     if (this.userMarker) this.leafletMap.removeLayer(this.userMarker);
     const currentLatLang = new LatLng(
@@ -77,9 +72,7 @@ export class TreasureApplication {
     );
 
     // 目標までの距離の更新
-    this.showMapTitle(
-      `${treasures[this.targetTreasureIndex].distanceByMeter} メートル`
-    );
+    this.showMapTitle(map.displayMessage);
   };
 
   /**
@@ -107,26 +100,13 @@ export class TreasureApplication {
    * @param treasures すべての宝箱
    * @returns マーカー
    */
-  markerSelect(
-    marker: Marker<any>,
-    currentTreasure: Treasure,
-    treasures: Treasure[]
-  ) {
+  markerSelect(marker: Marker<any>, currentTreasure: Treasure) {
     marker
       .bindPopup(
         `${currentTreasure.title}:${currentTreasure.distanceByMeter}メートル`,
         { autoPan: true }
       )
       .openPopup();
-
-    // 宝箱マーカークリック時
-    // marker.addEventListener("click", (event) => {
-    //   currentTreasure.leafletMarkerId = event.target._leaflet_id;
-
-    //   if (!this.currentGpsPos)
-    //     throw new Error("現在位置のキャッシュが取得できていません");
-    //   this.onGpsUpdate(treasures, this.currentGpsPos);
-    // });
     return marker;
   }
 
@@ -142,11 +122,12 @@ export class TreasureApplication {
       const marker = L.marker([pos.latitude, pos.longitude]).addTo(
         this.leafletMap
       );
-      marker.setIcon(redIcon);
+
+      marker.setIcon(t.checked ? okIcon : redIcon);
       t.leafletMarker = marker;
 
       // マーカーのクリックイベント
-      this.markerSelect(marker, t, treasures);
+      this.markerSelect(marker, t);
 
       return marker;
     });
@@ -169,24 +150,28 @@ export class TreasureApplication {
     console.log("treasuresInitData", treasuresInitData);
     this.mapContext = new MapContext(treasuresInitData);
 
-    // GPS初期化時のハンドラを追加
+    ///////////////////////////////
+    // GPS初期化時の処理
+    ///////////////////////////////
     this.mapContext.onGpsInit((treasures, map, current) => {
       // スタート画面のローディング表記を解除
       this.endLoading();
 
       // 宝箱マーカーをセット
-      const markers = this.setTreasureMarkers(treasures);
+      this.setTreasureMarkers(treasures);
 
       /**
        * 宝箱エンティティをシーンに追加
        */
       this.appendTreasureAEntity(treasures);
 
-      // GPS情報更新時のハンドラを起動
-      this.onGpsUpdate(treasures, current);
+      // GPS情報更新時の共通処理
+      this.onGpsUpdate(treasures, map, current);
     });
 
-    // GPS位置情報変更検知時のハンドラを追加
+    ///////////////////////////////
+    // GPS位置情報変更検知時の処理
+    ///////////////////////////////
     this.mapContext.onLocationChange((treasures, map, current) => {
       // 一番近い宝箱をターゲットにする
       const nearestTreasure = treasures.reduce(
@@ -198,9 +183,6 @@ export class TreasureApplication {
       // 自分の向きを表示
       this.showMapTitle(`${current.coords.heading}`);
 
-      // 最寄りのマーカーを赤にする
-      // this.mapContext.treasureMarkerColorChange(nearestTreasure.leafletMarker);
-
       // 最寄り宝箱がNearになったら
       if (nearestTreasure.distanceByMeter < 15) {
         // BoxOpenボタン
@@ -208,25 +190,29 @@ export class TreasureApplication {
         const btn = boxOpenButton.showOpenBoxButton();
         btn.addEventListener("click", async () => {
           nearestTreasure.setGltfModel("#open_box");
-          await nearestTreasure.openEfect();
+          map.openTreasure(nearestTreasure);
+          await nearestTreasure.openEffect();
+          nearestTreasure.leafletMarker.setIcon(okIcon);
+          this.showMapTitle(map.displayMessage);
+
+          // チェックを保存
+          checkTreasure(nearestTreasure.index);
+
           btn.remove();
         });
       }
 
-      // 宝箱を開ける処理
-      treasures.forEach((t) => {
-        t.leafletMarker.setPopupContent(t.popUpContent);
-      });
+      // 宝箱のポップアップを更新
+      treasures.forEach((t) => t.leafletMarker.setPopupContent(t.popUpContent));
 
-      // 位置の更新
-      this.onGpsUpdate(treasures, current);
+      // GPS情報更新時の共通処理
+      this.onGpsUpdate(treasures, map, current);
     });
 
     /**
      * GPS移動の監視を開始する
      */
     this.mapContext.watchStart().catch((error: any) => {
-      alert(error);
       console.error(error);
     });
   }

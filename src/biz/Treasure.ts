@@ -11,6 +11,7 @@ export class Treasure {
   private longitude = 0;
   private _title = "";
   private elementId = "";
+  public checked = false;
   private _distanceByKiloMeter = 0;
 
   public index = 0;
@@ -22,13 +23,15 @@ export class Treasure {
     longitude: number,
     title: string,
     elementId: string,
-    index: number
+    index: number,
+    checked: boolean
   ) {
     this.latitude = latitude;
     this.longitude = longitude;
     this._title = title;
     this.elementId = elementId;
     this.index = index;
+    this.checked = checked;
   }
 
   get title() {
@@ -89,7 +92,7 @@ export class Treasure {
     this.getAElement().setAttribute("gltf-model", path);
   }
 
-  async openEfect() {
+  async openEffect() {
     const model = this.getAElement();
     // model.object3D.rotateY(1);
     for (let i = 0; i <= 62; i++) {

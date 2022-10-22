@@ -1,5 +1,15 @@
 import L from "leaflet";
 
+export const okIcon = new L.Icon({
+  iconUrl: "../../assets/OK.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+  iconSize: [41, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
 export const personIcon = new L.Icon({
   iconUrl: "../../assets/person_marker.png",
   shadowUrl:

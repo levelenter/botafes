@@ -2,6 +2,7 @@ import { blueIcon, redIcon } from "./MapIcon";
 import { Marker } from "leaflet";
 import { GeoLocationUtils, Location } from "./GeoLocationUtils";
 import { Treasure } from "./Treasure";
+import { TreasureData } from "./data";
 
 export type EventHandler = (
   treasures: Treasure[],
@@ -14,14 +15,30 @@ export type EventHandler = (
  */
 export class MapContext {
   private treasures: Treasure[] = [];
+  private openedTreasures: Treasure[] = [];
   private geoLocationPosition: GeolocationPosition | null = null;
 
   constructor(data: any[]) {
     this.treasures = this.setupTreasures(data);
+    this.openedTreasures = this.treasures.filter((t) => t.checked);
   }
 
   private _onGpsInit: EventHandler | null = null;
   private _onLocationChange: EventHandler | null = null;
+
+  get treasureCount() {
+    return this.treasures.length;
+  }
+  get openedTreasureCount() {
+    return this.openedTreasures.length;
+  }
+  get displayMessage() {
+    return `のこりのタカラは${this.openedTreasureCount}/${this.treasureCount}個`;
+  }
+
+  openTreasure(t: Treasure) {
+    this.openedTreasures.push(t);
+  }
 
   /**
    * 宝箱のマーカーの選択色を変更する
@@ -68,9 +85,9 @@ export class MapContext {
    * 宝箱データをセットアップ
    * @param treasures
    */
-  private setupTreasures(treasures: any[]): Treasure[] {
+  private setupTreasures(treasures: TreasureData[]): Treasure[] {
     return treasures.map(
-      (v, index) => new Treasure(v.lat, v.lng, v.title, v.el, index)
+      (v, index) => new Treasure(v.lat, v.lng, v.title, v.el, index, v.checked)
     );
   }
 

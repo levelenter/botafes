@@ -15,6 +15,7 @@ export class UrlParamUtils {
       lng: parseFloat(latlang[1]),
       title: title,
       el: `treasure${i + 1}`,
+      checked: false,
     };
   }
 
