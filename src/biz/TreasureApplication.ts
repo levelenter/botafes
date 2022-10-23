@@ -1,10 +1,11 @@
-import { checkTreasure, data, saveState } from "./data";
+import { GpsContext } from "./GpsContext";
+import { checkTreasure } from "./data";
 import { BoxOpenButton, ResizeButton } from "./ButtonActions";
 import { Treasure } from "./Treasure";
 import { TreasuresContext } from "./TreasuresContext";
 import { treasuresInitData } from "../biz/data";
 import L, { LatLng, Map, Marker } from "leaflet";
-import { getElement, getXREntity, hide } from "./elements";
+import { getElement, getXREntity } from "./elements";
 import { appendBody } from "../utils/include";
 import { okIcon, personIcon, redIcon } from "./MapIcon";
 import { dialogOpen } from "../utils/dialogOpen";
@@ -16,8 +17,6 @@ export class TreasureApplication {
   private _leaflet: Map | null = null;
   userMarker = L.marker({ lat: 0, lng: 0 });
   targetTreasureIndex = 0;
-
-  private mapContext = new TreasuresContext([]);
 
   /**
    * MapのインスタンスNon null
@@ -54,36 +53,21 @@ export class TreasureApplication {
   }
 
   /**
-   * GPSの位置が変更された時に起動するメソッド
-   * @param treasures
-   * @param map
-   * @param current
-   */
-  onGpsUpdate = (
-    treasures: Treasure[],
-    map: TreasuresContext,
-    current: GeolocationPosition
-  ) => {
-    // ユーザー位置にマーカーを表示(削除・挿入)
-    if (this.userMarker) this.leafletMap.removeLayer(this.userMarker);
-    const currentLatLang = new LatLng(
-      current.coords.latitude,
-      current.coords.longitude
-    );
-    this.userMarker = L.marker(currentLatLang, { icon: personIcon }).addTo(
-      this.leafletMap
-    );
-
-    // 目標までの距離の更新
-    this.showMapTitle(map.displayMessage);
-  };
-
-  /**
    * マップのタイトルバーに表示する
    */
   showMapTitle(title: string) {
     const distanceLabel = getElement("map_title_label");
     distanceLabel.innerHTML = title;
+  }
+
+  /**
+   * 終了ボタンをセットアップする
+   */
+  setupEndingButton() {
+    const endBtn = getElement("ending_btn");
+    endBtn.classList.remove("d-none");
+    endBtn.classList.remove("d-block");
+    endBtn.addEventListener("click", () => this.showEnding());
   }
 
   /**
@@ -146,6 +130,34 @@ export class TreasureApplication {
   }
 
   /**
+   * GPSの位置が変更された時に起動する共通処理
+   * @param treasures
+   * @param treasuresContext
+   * @param current
+   */
+  commonGpsHandler = (
+    treasuresContext: TreasuresContext,
+    current: GeolocationPosition
+  ) => {
+    // 現在位置からの距離を算出
+    treasuresContext.treasures.forEach((t) =>
+      t.setDistanceFromGeoLocation(current)
+    );
+
+    // ユーザー位置にマーカーを表示(削除・挿入)
+    if (this.userMarker) this.leafletMap.removeLayer(this.userMarker);
+    const currentLatLang = new LatLng(
+      current.coords.latitude,
+      current.coords.longitude
+    );
+    this.userMarker = L.marker(currentLatLang, { icon: personIcon }).addTo(
+      this.leafletMap
+    );
+    // 目標までの距離の更新
+    this.showMapTitle(treasuresContext.displayMessage);
+  };
+
+  /**
    * アプリケーション初期化
    */
   async init() {
@@ -157,45 +169,42 @@ export class TreasureApplication {
     new ResizeButton().setupMapResizeButton();
 
     /**
-     * 宝箱を設定する
+     * 宝箱とGPSの管理オブジェクトを設定する
      */
-    // console.log("treasuresInitData", treasuresInitData);
-    this.mapContext = new TreasuresContext(treasuresInitData);
+    const treasuresContext = new TreasuresContext(treasuresInitData);
+    const gpsContext = new GpsContext<TreasuresContext>();
 
     ///////////////////////////////
-    // GPS初期化時の処理
+    // GPS初期化時の処理をコールバックとして追加
     ///////////////////////////////
-    this.mapContext.onGpsInit((treasures, map, current) => {
+    gpsContext.onGpsInit((model, current) => {
       // スタート画面のローディング表記を解除
       this.endLoading();
 
       // 宝箱マーカーをセット
-      this.setTreasureMarkers(treasures);
+      this.setTreasureMarkers(model.treasures);
 
-      if (map.isComplete) {
-        const endBtn = getElement("ending_btn");
-        endBtn.classList.remove("d-none");
-        endBtn.classList.remove("d-block");
-        endBtn.addEventListener("click", () => this.showEnding());
+      if (treasuresContext.isComplete) {
+        this.setupEndingButton();
       }
 
       /**
        * 宝箱エンティティをシーンに追加
        */
-      this.appendTreasureAEntity(treasures);
+      this.appendTreasureAEntity(model.treasures);
 
       // GPS情報更新時の共通処理
-      this.onGpsUpdate(treasures, map, current);
+      this.commonGpsHandler(model, current);
     });
 
     ///////////////////////////////
-    // GPS位置情報変更検知時の処理
+    // GPS位置情報変更検知時の処理をコールバックとして追加
     ///////////////////////////////
-    this.mapContext.onLocationChange((treasures, map, current) => {
+    gpsContext.onLocationChange((model, current) => {
       // 一番近い宝箱をターゲットにする
-      const nearestTreasure = treasures.reduce(
+      const nearestTreasure = model.treasures.reduce(
         (p, c) => (p.distanceByKiloMeter > c.distanceByKiloMeter ? c : p),
-        treasures[0]
+        model.treasures[0]
       );
       this.targetTreasureIndex = nearestTreasure.index;
 
@@ -206,33 +215,35 @@ export class TreasureApplication {
         const btn = boxOpenButton.showOpenBoxButton();
         btn.addEventListener("click", async () => {
           nearestTreasure.setGltfModel("#open_box");
-          map.openTreasure(nearestTreasure);
+          treasuresContext.openTreasure(nearestTreasure);
           await nearestTreasure.openEffect();
           nearestTreasure.leafletMarker.setIcon(okIcon);
-          this.showMapTitle(map.displayMessage);
+          this.showMapTitle(treasuresContext.displayMessage);
 
           // チェックを保存
           checkTreasure(nearestTreasure.index);
-
           btn.remove();
-          if (map.isComplete) {
+
+          if (treasuresContext.isComplete) {
             this.showEnding();
           }
         });
       }
 
       // 宝箱のポップアップを更新
-      treasures.forEach((t) => t.leafletMarker.setPopupContent(t.popUpContent));
+      treasuresContext.treasures.forEach((t) =>
+        t.leafletMarker.setPopupContent(t.popUpContent)
+      );
 
       // GPS情報更新時の共通処理
-      this.onGpsUpdate(treasures, map, current);
+      this.commonGpsHandler(treasuresContext, current);
     });
 
     /**
      * GPS移動の監視を開始する
      */
-    this.mapContext.watchStart().catch((error: any) => {
-      console.error(error);
-    });
+    gpsContext
+      .watchStart(treasuresContext)
+      .catch((error) => console.error(error));
   }
 }

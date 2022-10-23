@@ -79,6 +79,9 @@ export class Treasure {
     return distanceLength;
   }
 
+  /**
+   * マーカーをタップしたときに表示するメッセージ
+   */
   get popUpContent() {
     return `${this.distanceByMeter}メートル`;
   }
@@ -92,6 +95,9 @@ export class Treasure {
     this.getAElement().setAttribute("gltf-model", path);
   }
 
+  /**
+   * 宝箱を開いたときのエフェクト
+   */
   async openEffect() {
     const model = this.getAElement();
     // model.object3D.rotateY(1);

@@ -1,45 +1,59 @@
 import { blueIcon, redIcon } from "./MapIcon";
 import { Marker } from "leaflet";
-import { GeoLocationUtils, Location } from "./GeoLocationUtils";
 import { Treasure } from "./Treasure";
 import { TreasureData } from "./data";
-
-export type EventHandler = (
-  treasures: Treasure[],
-  context: TreasuresContext,
-  current: GeolocationPosition
-) => void;
 
 /**
  * 地図を表すオブジェクト
  */
 export class TreasuresContext {
-  private treasures: Treasure[] = [];
+  private _treasures: Treasure[] = [];
   private openedTreasures: Treasure[] = [];
-  private geoLocationPosition: GeolocationPosition | null = null;
 
   constructor(data: any[]) {
-    this.treasures = this.setupTreasures(data);
+    this._treasures = this.setupTreasures(data);
     this.openedTreasures = this.treasures.filter((t) => t.checked);
   }
 
-  private _onGpsInit: EventHandler | null = null;
-  private _onLocationChange: EventHandler | null = null;
+  /**
+   * 全宝箱インスタンス
+   */
+  get treasures() {
+    return this._treasures;
+  }
 
+  /**
+   * 全部の宝箱の数
+   */
   get treasureCount() {
     return this.treasures.length;
   }
+
+  /**
+   * 開いた宝箱の数
+   */
   get openedTreasureCount() {
     return this.openedTreasures.length;
   }
+
+  /**
+   * マップのタブに表示するメッセージ取得
+   */
   get displayMessage() {
     return `のこりのタカラは${this.openedTreasureCount}/${this.treasureCount}個`;
   }
 
+  /**
+   * 完了判定
+   */
   get isComplete() {
     return this.treasureCount === this.openedTreasureCount;
   }
 
+  /**
+   * 宝箱を開く
+   * @param t
+   */
   openTreasure(t: Treasure) {
     // -１なら登録されていない
     if (this.openedTreasures.findIndex((v) => v.index === t.index) < 0) {
@@ -48,7 +62,7 @@ export class TreasuresContext {
   }
 
   /**
-   * 宝箱のマーカーの選択色を変更する
+   * 宝箱のマーカーの選択色を変更する(他のマーカーは色を戻す)
    * @param marker
    */
   treasureMarkerColorChange(marker: Marker) {
@@ -59,75 +73,12 @@ export class TreasuresContext {
   }
 
   /**
-   * Gpsの初期化時のイベントハンドラを設定
-   * @param callback
-   */
-  onGpsInit(callback: EventHandler) {
-    this._onGpsInit = callback;
-  }
-
-  /**
-   * ロケーションが変わった時に実行するイベントハンドラ
-   * @param callback
-   */
-  onLocationChange(callback: EventHandler) {
-    this._onLocationChange = callback;
-  }
-
-  /**
-   * GPSの初期設定と各宝箱の設定
-   */
-  private gpsInit() {
-    GeoLocationUtils.atCurrentPosition((position: GeolocationPosition) => {
-      this.geoLocationPosition = position;
-      this.treasures.forEach((t) => t.setDistanceFromGeoLocation(position));
-
-      // コールバックがあれば起動
-      this._onGpsInit &&
-        this._onGpsInit(this.treasures, this, this.geoLocationPosition);
-    });
-  }
-
-  /**
    * 宝箱データをセットアップ
    * @param treasures
    */
   private setupTreasures(treasures: TreasureData[]): Treasure[] {
     return treasures.map(
       (v, index) => new Treasure(v.lat, v.lng, v.title, v.el, index, v.checked)
-    );
-  }
-
-  /**
-   * 移動時のGPSLocationを監視して宝箱にセット
-   * @returns
-   */
-  async watchStart(): Promise<void> {
-    if (!navigator.geolocation) {
-      throw new Error("Geolocation is not supported by your browser");
-    }
-
-    /**
-     * GPSの初期化
-     */
-    this.gpsInit();
-
-    /**
-     * GPSの監視
-     */
-    return await GeoLocationUtils.atWatchPosition(
-      (position: GeolocationPosition) => {
-        this.geoLocationPosition = position;
-        this.treasures.forEach((t) => t.setDistanceFromGeoLocation(position));
-
-        // コールバックがあれば起動
-        this._onLocationChange &&
-          this._onLocationChange(
-            this.treasures,
-            this,
-            this.geoLocationPosition
-          );
-      }
     );
   }
 }

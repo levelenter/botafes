@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html style="height: 100%">
   <link>
-    <script type="importmap">
-      { "imports": { "three": "https://threejs.org/build/three.module.js" } }
-    </script>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no," />
     <script type="text/javascript" src="../../js/aframe.min.js"></script>
     <script type="text/javascript" src="../../js/aframe-extras.min.js" ></script>
     <script type="text/javascript" src="../../js/aframe-ar-nft-no-prompt.js"></script>
@@ -72,7 +69,7 @@
         font-family: 'Montserrat';
         font-style: normal;
         font-weight: 600;
-        font-size: 20px;
+        font-size: 18px;
         line-height: 27px;
         letter-spacing: 0.1em;
       }
@@ -81,10 +78,10 @@
 
   </head>
   <body style="margin: 0;width: 100%; height: 100%;">
-    <a-scene
+    <a-scene 
       embedded start
       vr-mode-ui="enabled: false;"
-      arjs="trackingMethod: best; sourceType: webcam; matrixCodeType: 3x3;detectionMode:mono_and_matrix; debugUIEnabled: false;"
+      arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;"
       renderer="logarithmicDepthBuffer:true; colorManagement: true;"
       gltf-model="dracoDecoderPath:../../js/draco/gltf/"
       gps-camera-debug
@@ -112,7 +109,7 @@
     <div
       id="start_page"
       class="position-absolute top-0 start-0 w-100 d-flex align-items-center justify-content-center"
-      style="height: 100vh; background-color: white; z-index: 1020"
+      style="height: 100%; background-color: white; z-index: 1020"
     >
       <div class="d-flex flex-column w-100">
         <div id="ar_start_label" class="mb-3 w-100 basefont d-flex justify-content-center text-center ">宝探しAR</div>

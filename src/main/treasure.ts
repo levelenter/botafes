@@ -7,6 +7,15 @@ import "../a-components/look-at";
 // 開始ページを読み込む
 const AFRAME = GlobalImport.getAFRAME();
 
+// ピンチを抑制
+document.addEventListener(
+  "touchmove",
+  function (e) {
+    e.preventDefault();
+  },
+  { passive: false }
+);
+
 // エラーコンソール画面を取り込む
 appendBody("./sections/error_console.html").catch((error) => {
   console.error(error);
@@ -22,6 +31,8 @@ AFRAME.registerComponent("start", {
   init: function () {
     const app = new TreasureApplication();
     app.init().then(() => {
+      alert((document.querySelector("#arjs-video") as any).width);
+      alert((document.querySelector("#arjs-video") as any).height);
       console.log("start treasure app");
     });
 
