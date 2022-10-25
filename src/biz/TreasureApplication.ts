@@ -209,7 +209,7 @@ export class TreasureApplication {
       this.targetTreasureIndex = nearestTreasure.index;
 
       // 最寄り宝箱がNearになったら
-      if (nearestTreasure.distanceByMeter < 15) {
+      if (nearestTreasure.distanceByMeter < 20) {
         // BoxOpenボタン
         const boxOpenButton = new BoxOpenButton();
         const btn = boxOpenButton.showOpenBoxButton();

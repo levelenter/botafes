@@ -16,10 +16,6 @@ document.addEventListener(
   { passive: false }
 );
 
-// エラーコンソール画面を取り込む
-appendBody("./sections/error_console.html").catch((error) => {
-  console.error(error);
-});
 appendBody("./sections/complete_dialog.html").catch((error) => {
   console.error(error);
 });
@@ -31,8 +27,7 @@ AFRAME.registerComponent("start", {
   init: function () {
     const app = new TreasureApplication();
     app.init().then(() => {
-      alert((document.querySelector("#arjs-video") as any).width);
-      alert((document.querySelector("#arjs-video") as any).height);
+      // alert((document.querySelector("#arjs-video") as any).height);
       console.log("start treasure app");
     });
 

@@ -104,7 +104,7 @@ export class Treasure {
     for (let i = 0; i <= 62; i++) {
       await waitAnimationFrame();
       // model.object3D.rotateX(i);
-      model.object3D.rotation.y += 0.1;
+      model.object3D.rotation.y += 0.05;
     }
   }
 
