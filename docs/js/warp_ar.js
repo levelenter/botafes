@@ -74,14 +74,14 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexpo
 
 /***/ }),
 
-/***/ "./src/main/warp.ts":
-/*!**************************!*\
-  !*** ./src/main/warp.ts ***!
-  \**************************/
+/***/ "./src/main/warp_ar.ts":
+/*!*****************************!*\
+  !*** ./src/main/warp_ar.ts ***!
+  \*****************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nconst sounds_1 = __webpack_require__(/*! ../biz/sounds */ \"./src/biz/sounds.ts\");\nconst GlobalImport_1 = __webpack_require__(/*! ../utils/GlobalImport */ \"./src/utils/GlobalImport.ts\");\nconst elements_1 = __webpack_require__(/*! ../biz/elements */ \"./src/biz/elements.ts\");\nconst animationFrame_1 = __webpack_require__(/*! ../utils/animationFrame */ \"./src/utils/animationFrame.ts\");\nconst AFRAME = GlobalImport_1.GlobalImport.getAFRAME();\nAFRAME.registerComponent(\"start\", {\n    init: async function () {\n        async function toggle() {\n            ids.forEach(async (id) => {\n                let b = document.getElementById(\"sky\" + id);\n                // b.setAttribute(\"opacity\", id === current_id ? \"1\" : \"0\");\n                b.setAttribute(\"opacity\", \"0\");\n                if (id === current_id) {\n                    let op = 0;\n                    for (let i = 0; i < 100; i++) {\n                        await (0, animationFrame_1.waitAnimationFrame)();\n                        op += 0.01;\n                        b.setAttribute(\"opacity\", op);\n                    }\n                }\n            });\n        }\n        const button = (0, elements_1.getElement)(\"warp_btn\");\n        let current_id = 0;\n        let ids = [0, 1, 2, 3, 4];\n        button.addEventListener(\"click\", async () => {\n            sounds_1.clickSound.play();\n            if (ids.length - 1 > current_id) {\n                current_id++;\n            }\n            else {\n                current_id = 1;\n            }\n            await toggle();\n        });\n    },\n});\n\n\n//# sourceURL=webpack:///./src/main/warp.ts?");
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nconst sounds_1 = __webpack_require__(/*! ../biz/sounds */ \"./src/biz/sounds.ts\");\nconst GlobalImport_1 = __webpack_require__(/*! ../utils/GlobalImport */ \"./src/utils/GlobalImport.ts\");\nconst elements_1 = __webpack_require__(/*! ../biz/elements */ \"./src/biz/elements.ts\");\nconst animationFrame_1 = __webpack_require__(/*! ../utils/animationFrame */ \"./src/utils/animationFrame.ts\");\nconst AFRAME = GlobalImport_1.GlobalImport.getAFRAME();\nAFRAME.registerComponent(\"start\", {\n    init: async function () {\n        async function toggle() {\n            ids.forEach(async (id) => {\n                let b = document.getElementById(\"picture\" + id);\n                // b.setAttribute(\"opacity\", id === current_id ? \"1\" : \"0\");\n                if (!b)\n                    return;\n                b.setAttribute(\"opacity\", \"0\");\n                if (id === current_id) {\n                    let op = 0;\n                    for (let i = 0; i < 100; i++) {\n                        await (0, animationFrame_1.waitAnimationFrame)();\n                        op += 0.01;\n                        b.setAttribute(\"opacity\", op);\n                    }\n                }\n            });\n        }\n        const button = (0, elements_1.getElement)(\"warp_btn\");\n        let current_id = 0;\n        let ids = [0, 1, 2];\n        button.addEventListener(\"click\", async () => {\n            sounds_1.clickSound.play();\n            if (ids.length - 1 > current_id) {\n                current_id++;\n            }\n            else {\n                current_id = 0;\n            }\n            await toggle();\n        });\n        await toggle();\n    },\n});\n\n\n//# sourceURL=webpack:///./src/main/warp_ar.ts?");
 
 /***/ }),
 
@@ -179,7 +179,7 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexpo
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = __webpack_require__("./src/main/warp.ts");
+/******/ 	var __webpack_exports__ = __webpack_require__("./src/main/warp_ar.ts");
 /******/ 	
 /******/ })()
 ;

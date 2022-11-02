@@ -9,8 +9,9 @@ AFRAME.registerComponent("start", {
   init: async function () {
     async function toggle() {
       ids.forEach(async (id) => {
-        let b = document.getElementById("sky" + id) as any;
+        let b = document.getElementById("picture" + id) as any;
         // b.setAttribute("opacity", id === current_id ? "1" : "0");
+        if (!b) return;
         b.setAttribute("opacity", "0");
         if (id === current_id) {
           let op = 0;
@@ -25,15 +26,16 @@ AFRAME.registerComponent("start", {
 
     const button = getElement("warp_btn");
     let current_id = 0;
-    let ids = [0, 1, 2, 3, 4];
+    let ids = [0, 1, 2];
     button.addEventListener("click", async () => {
       clickSound.play();
       if (ids.length - 1 > current_id) {
         current_id++;
       } else {
-        current_id = 1;
+        current_id = 0;
       }
       await toggle();
     });
+    await toggle();
   },
 });

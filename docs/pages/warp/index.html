@@ -1,50 +1,66 @@
 <!DOCTYPE html>
-<html style="height:100%">
-<head>
-  <meta name="description" content="warp button vr" />
-  <meta charset="utf-8" />
-  <title>Warp VR</title>
-  <script type="text/javascript" src="../../js/aframe.min.js"></script>
-  <script type="text/javascript" src="../../js/warp.js"></script>
-  <script type='text/javascript' src='https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js'></script>
-  <script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js'></script>
-  <meta charset="UTF-8">
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-    crossorigin="anonymous"
-  />
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-    crossorigin="anonymous"
-  ></script>
+<html style="height: 100%">
+  <head>
+    <meta name="description" content="warp button vr" />
+    <meta charset="utf-8" />
+    <title>Warp VR</title>
+    <script type="text/javascript" src="../../js/aframe.min.js"></script>
+    <script type="text/javascript" src="../../js/warp.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0, user-scalable=no," />
+    <style>
+      body{
+        font-size: 0.625%;
+        overflow: hidden;
+        touch-action: manipulation;
+      }
+ 
+    </style>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+      device-orientation-permission-ui="enabled:true;denyButtonText:いいえ;allowButtonText:はい;cancelButtonText:キャンセル;deviceMotionMessage:`向きのセンサーにアクセスしてよろしいですか`;mobileDesktopMessage:<a href='../../img/mobile_safari.jpg' >こちら</a>の手順に従って、モバイル用Webサイトに切り替えてこの画面をリロードしてください"
 
-  <!--html_placeholder--><a id="myEnterARButton" href="#"></a>
-</head>
-<body style="margin: 0; overflow: hidden; height:100%;">
-  <a-scene start embedded="" vr-mode-handler="" renderer="logarithmicDepthBuffer:true;colorManagement: true;" vr-mode-ui="enabled: false" gltf-model="dracoDecoderPath:../public/draco/gltf/" arjs="trackingMethod: best; sourceType: webcam; matrixCodeType: 3x3;detectionMode:mono_and_matrix; debugUIEnabled: false;">
-    <a-assets>
-      <img id="img0" src="../../img/200930_A6_1699.jpg"></img>
-      <img id="img1" src="../../img/5D0A3564edited.jpg"></img>
-      <img id="img2" src="../../img/FISH_133.jpg"></img>
-      <!-- <img id="sky_img3" src="../../img/sky3.jpeg"></img>
-      <img id="sky_img4" src="../../img/sky4.jpeg"></img> -->
-      <a-asset-item id="button"  src="../../assets/warp_btn/scene.gltf"></a-asset-item>
-    </a-assets>
+    ></script>
 
-    <a-gltf-model id="warp_btn" class="clickable" src="#button" position="0 -1 -6" rotation="25 0 0"></a-gltf-model>
+    <meta charset="UTF-8" />
+  </head>
+  <body style="margin: 0; overflow: hidden; height: 100%;background-color: black;">
+    <a-scene
+      start
+      embedded=""
+      vr-mode-handler=""
+    >
+    <!--       gltf-model="dracoDecoderPath:../../js/draco/gltf/"
+    -->
 
-    <a-box  id="picture0"  src="#img0" scale=" 5.76  3.84 0" position="0 2 -10" color="white"></a-box>
-    <a-box  id="picture1"  src="#img1" scale=" 5.76  3.84 0" position="0 2 -10" color="white"></a-box>
-    <a-box  id="picture2"  src="#img2" scale=" 5.76  3.84 0" position="0 2 -10" color="white"></a-box>
-    <!-- <a-box  id="picture3"  src="#sky_img3" scale="10.24 5.12 0" position="0 2 -10" color="white"></a-box> -->
+      <a-assets>
+        <img id="sky_img0" src="../../img/sky0.jpeg"></img>
+        <img id="sky_img1" src="../../img/sky1.jpeg"></img>
+        <img id="sky_img2" src="../../img/sky2.jpeg"></img>
+        <img id="sky_img3" src="../../img/sky3.jpeg"></img>
+        <img id="sky_img4" src="../../img/sky4.jpeg"></img>
+        <a-asset-item id="button"  src="../../assets/warp_btn/scene.gltf"></a-asset-item>
+      </a-assets>
 
-    <a-camera id="main-camera" look-controls="pointerLockEnabled: false" >
-      <a-entity id="cursor" cursor="rayOrigin: mouse;fuse:false" raycaster="objects: .clickable" ></a-entity>
-    </a-camera>
-    
-  </a-scene>
-</body>
+      <a-sky id="sky0" src="#sky_img0" opacity="1"></a-sky>
+      <a-sky id="sky1" src="#sky_img1" opacity="0"></a-sky>
+      <a-sky id="sky2" src="#sky_img2" opacity="0"></a-sky>
+      <a-sky id="sky3" src="#sky_img3" opacity="0"></a-sky>
+      <a-sky id="sky4" src="#sky_img4" opacity="0"></a-sky>
+
+      <a-gltf-model id="warp_btn" class="clickable" src="#button" position="0 0 -4" rotation="25 0 0"></a-gltf-model>
+
+      <a-camera id="main-camera" look-controls="pointerLockEnabled: false" >
+        <a-entity id="cursor" cursor="rayOrigin: mouse;fuse:false" raycaster="objects: .clickable" ></a-entity>
+      </a-camera>
+      
+    </a-scene>
+  </body>
 </html>

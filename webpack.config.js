@@ -2,6 +2,7 @@ module.exports = {
   mode: "development",
   entry: {
     warp: "./src/main/warp.ts",
+    warp_ar: "./src/main/warp_ar.ts",
     treasure: "./src/main/treasure.ts",
   },
   output: {
