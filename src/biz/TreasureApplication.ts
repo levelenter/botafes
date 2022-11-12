@@ -210,6 +210,8 @@ export class TreasureApplication {
 
       // 最寄り宝箱がNearになったら
       if (nearestTreasure.distanceByMeter < 20) {
+        nearestTreasure.setGltfModel("#box");
+
         // BoxOpenボタン
         const boxOpenButton = new BoxOpenButton();
         const btn = boxOpenButton.showOpenBoxButton();

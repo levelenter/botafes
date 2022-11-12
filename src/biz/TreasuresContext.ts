@@ -40,7 +40,7 @@ export class TreasuresContext {
    * マップのタブに表示するメッセージ取得
    */
   get displayMessage() {
-    return `のこりのタカラは${this.openedTreasureCount}/${this.treasureCount}個`;
+    return `<center>のこりのタカラは${this.openedTreasureCount}/${this.treasureCount}個<BR>15メートルまでちかづいてゲット！</center>`;
   }
 
   /**

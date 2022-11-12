@@ -44,7 +44,7 @@ export class Treasure {
   createAElement(): Entity {
     const entity = document.createElement("a-entity");
     entity.id = this.elementId;
-    entity.setAttribute("gltf-model", "#box");
+    entity.setAttribute("gltf-model", "#hatena");
     entity.setAttribute(
       "gps-entity-place",
       `latitude:${this.latitude}; longitude:${this.longitude};`
